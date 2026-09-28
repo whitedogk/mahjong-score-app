@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102b28">
+  <title>麻雀 得点計算</title>
+  <style>
+    :root{color-scheme:light;--ink:#17312d;--muted:#71817b;--line:#dce5df;--paper:#f5f7f3;--white:#fff;--green:#176b52;--green-dark:#0f493b;--gold:#d8a84f;--shadow:0 18px 48px #14372b12}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 12% 0%,#e5eee5 0,transparent 34rem),var(--paper);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh;display:grid;place-items:center;padding:26px}
+    button,input{font:inherit}button{cursor:pointer}.app{width:min(100%,760px);background:var(--white);border:1px solid #e7ece7;border-radius:22px;box-shadow:var(--shadow);overflow:hidden}.top{padding:27px 32px 22px;background:var(--green-dark);color:#f7fbf7;position:relative}.top:after{content:"";position:absolute;right:31px;top:22px;width:42px;height:42px;border:1px solid #ffffff32;border-radius:50%;box-shadow:0 0 0 8px #ffffff0b,0 0 0 17px #ffffff08}.eyebrow{font-size:11px;letter-spacing:.18em;color:#c6d9cb;margin:0 0 7px}.top h1{font-size:24px;letter-spacing:.06em;margin:0}.top p{margin:7px 0 0;font-size:13px;color:#d0ddd3}.content{padding:25px 32px 30px}.toolbar{display:flex;flex-wrap:wrap;gap:9px;align-items:center}.toolbar button,.honba button{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:9px;padding:9px 13px;font-weight:650;font-size:13px;transition:.15s}.toolbar button:hover,.honba button:hover{border-color:#8da99b;background:#f4f8f4}.toolbar button.active{border-color:#bcd6c6;background:#eaf4ed;color:var(--green-dark)}.toolbar button.danger{color:#9e4a42}.toolbar button:focus-visible,.honba button:focus-visible,input:focus-visible{outline:3px solid #d9ad5c;outline-offset:2px}.spacer{flex:1}.honba{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:13px}.honba button{width:32px;height:32px;padding:0;font-size:18px;line-height:1}.honba output{min-width:24px;text-align:center;font-weight:750;color:var(--ink)}
+    .fields{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:26px 0 22px}.field{border:1px solid var(--line);border-radius:13px;padding:15px 16px 14px;background:#fcfdfb}.field-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}.field label{font-size:14px;font-weight:750}.field small{color:var(--muted);font-size:11px}.stepper{display:grid;grid-template-columns:42px 1fr 42px;align-items:center;gap:8px}.stepper button{height:39px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--green-dark);font-size:20px}.stepper button:hover{background:#edf5ef}.stepper input{width:100%;border:1px solid var(--line);height:39px;border-radius:9px;text-align:center;color:var(--ink);font-size:19px;font-weight:750;background:white}.suffix{text-align:center;font-size:12px;color:var(--muted);margin-top:5px}.hint{font-size:12px;color:var(--muted);line-height:1.6;margin:0 0 20px}
+    .scores{display:grid;grid-template-columns:1fr 1fr;gap:14px}.score{padding:18px 19px 17px;border-radius:13px;background:#f4f7f3;border:1px solid #e5ebe5;min-height:119px}.score.ron{background:#f3f7f2}.score-label{font-size:12px;font-weight:750;color:var(--muted);letter-spacing:.1em}.score-main{font-size:28px;font-weight:800;letter-spacing:.015em;margin:5px 0;color:var(--green-dark);font-variant-numeric:tabular-nums}.score-sub{font-size:13px;color:#53655c;font-weight:650;line-height:1.6}.yakuman{color:#a66c12!important}.score-details{margin-top:9px;padding-top:8px;border-top:1px solid #dce5dc;color:var(--muted);font-size:11px}.foot{display:flex;justify-content:space-between;gap:16px;margin-top:19px;padding-top:14px;border-top:1px solid #edf0eb;color:var(--muted);font-size:11px;line-height:1.7}.foot strong{color:#53655c}.live{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media(max-width:600px){body{padding:12px;display:block}.app{border-radius:17px;margin:7px auto}.top{padding:22px 20px}.content{padding:18px 17px 22px}.fields{gap:10px;margin:19px 0 15px}.field{padding:12px 10px}.stepper{grid-template-columns:34px 1fr 34px;gap:5px}.stepper button{height:36px}.stepper input{height:36px}.toolbar{gap:7px}.toolbar button{padding:8px 10px;font-size:12px}.honba{margin-left:auto}.scores{gap:9px}.score{padding:14px 12px;min-height:112px}.score-main{font-size:23px}.score-sub{font-size:12px}.foot{display:block}.foot span{display:block;margin-bottom:4px}}
+    @media(max-width:370px){.scores,.fields{grid-template-columns:1fr}.score{min-height:unset}.spacer{display:none}.toolbar .honba{flex-basis:100%;justify-content:flex-end}}
+  </style>
+</head>
+<body>
+  <main class="app" aria-label="麻雀得点計算機">
+    <header class="top"><p class="eyebrow">RIICHI MAHJONG · SCORE</p><h1>麻雀 得点計算</h1><p>符と翻を選ぶと、ロン・ツモの点数を表示します。</p></header>
+    <section class="content">
+      <div class="toolbar" aria-label="役と設定">
+        <button id="dealer" type="button" aria-pressed="false">親番</button>
+        <button id="pinfu" type="button" aria-pressed="false">平和</button>
+        <button id="chiitoi" type="button" aria-pressed="false">七対子</button>
+        <span class="spacer"></span>
+        <div class="honba" aria-label="本場"><span>本場</span><button id="honbaDown" type="button" aria-label="本場を減らす">−</button><output id="honba" aria-live="polite">0</output><button id="honbaUp" type="button" aria-label="本場を増やす">＋</button></div>
+        <button id="undo" type="button" title="1つ前の操作を取り消す">戻る</button>
+        <button id="clear" class="danger" type="button">クリア</button>
+      </div>
+      <div class="fields">
+        <div class="field"><div class="field-head"><label for="fu">符</label><small id="fuNote">10符単位・直接入力可</small></div><div class="stepper"><button type="button" id="fuDown" aria-label="符を10下げる">−</button><input id="fu" type="number" min="20" max="110" step="10" inputmode="numeric" value="30"><button type="button" id="fuUp" aria-label="符を10上げる">＋</button></div><div class="suffix">符</div></div>
+        <div class="field"><div class="field-head"><label for="han">翻</label><small>1翻〜13翻</small></div><div class="stepper"><button type="button" id="hanDown" aria-label="翻を1下げる">−</button><input id="han" type="number" min="1" max="13" step="1" inputmode="numeric" value="3"><button type="button" id="hanUp" aria-label="翻を1上げる">＋</button></div><div class="suffix">翻</div></div>
+      </div>
+      <p class="hint" id="hint">平和・七対子はボタンで切り替え。翻数は成立役を含めた合計を入力してください。</p>
+      <div class="scores" aria-live="polite" aria-atomic="true">
+        <article class="score ron"><div class="score-label">ロン</div><div class="score-main" id="ronTotal">3,900点</div><div class="score-sub" id="ronInfo">子の和了</div><div class="score-details" id="ronDetail">30符 3翻</div></article>
+        <article class="score"><div class="score-label">ツモ</div><div class="score-main" id="tsumoTotal">1,000 / 2,000点</div><div class="score-sub" id="tsumoInfo">子 1,000点 ／ 親 2,000点</div><div class="score-details" id="tsumoDetail">30符 3翻</div></article>
+      </div>
+      <div class="foot"><span><strong>点数の見方</strong>　ツモ欄は「子の支払い ／ 親の支払い」です。</span><span>本場：ロンは300点、本場ごと。ツモは各家100点、本場ごと。</span></div>
+      <div id="announcement" class="live" role="status"></div>
+    </section>
+  </main>
+<script>
+(() => {
+  const initial = {dealer:false,pinfu:false,chiitoi:false,fu:30,han:3,honba:0};
+  let state = {...initial};
+  const history = [];
+  const $ = id => document.getElementById(id);
+  const ceil100 = n => Math.ceil(n / 100) * 100;
+  const fmt = n => Math.round(n).toLocaleString('ja-JP');
+  function roundedFu(fu) { return fu === 25 ? 25 : Math.ceil(fu / 10) * 10; }
+  function limitBase(fu, han) {
+    if (han >= 13) return 8000;
+    const raw = fu * 2 ** (han + 2);
+    if (han >= 11) return 6000;
+    if (han >= 8) return 4000;
+    if (han >= 6) return 3000;
+    if (han >= 5 || raw >= 2000) return 2000;
+    return raw;
+  }
+  function points(fu, han) {
+    const base = limitBase(fu, han);
+    const ron = ceil100(base * (state.dealer ? 6 : 4)) + 300 * state.honba;
+    const child = ceil100(base * (state.dealer ? 2 : 1)) + 100 * state.honba;
+    const parent = ceil100(base * 2) + 100 * state.honba;
+    return {base,ron,child,parent};
+  }
+  function setFu(next) {
+    state.fu = Math.min(110, Math.max(20, Math.round(Number(next) || 20)));
+    if (state.chiitoi) state.fu = 25;
+  }
+  function change(mutator, message) {
+    history.push({...state});
+    if (history.length > 100) history.shift();
+    mutator(); render();
+    if (message) $('announcement').textContent = message;
+  }
+  function render() {
+    $('dealer').classList.toggle('active', state.dealer); $('dealer').setAttribute('aria-pressed', state.dealer);
+    $('pinfu').classList.toggle('active', state.pinfu); $('pinfu').setAttribute('aria-pressed', state.pinfu);
+    $('chiitoi').classList.toggle('active', state.chiitoi); $('chiitoi').setAttribute('aria-pressed', state.chiitoi);
+    $('fu').value = state.fu; $('fu').disabled = state.chiitoi; $('fuDown').disabled = state.chiitoi; $('fuUp').disabled = state.chiitoi;
+    $('fuNote').textContent = state.chiitoi ? '七対子は25符固定' : state.pinfu ? '平和はロン30符・ツモ20符' : '10符単位・直接入力可';
+    $('han').value = state.han; $('honba').textContent = state.honba;
+    const han = state.han;
+    const ronFu = state.chiitoi ? 25 : state.pinfu ? 30 : roundedFu(state.fu);
+    const tsumoFu = state.chiitoi ? 25 : state.pinfu ? 20 : roundedFu(state.fu);
+    const r = points(ronFu, han), t = points(tsumoFu, han);
+    const yakuman = han >= 13;
+    $('ronTotal').textContent = `${fmt(r.ron)}点`;
+    $('ronTotal').classList.toggle('yakuman', yakuman);
+    $('ronInfo').textContent = `${state.dealer ? '親' : '子'}の和了`;
+    $('ronDetail').textContent = `${ronFu}符 ${han}翻${yakuman ? ' · 数え役満' : ''}${state.honba ? ` · 本場加算 ${fmt(300*state.honba)}点` : ''}`;
+    const childPay = t.child;
+    const parentPay = t.parent;
+    $('tsumoTotal').textContent = state.dealer ? `${fmt(childPay)}点` : `${fmt(childPay)} / ${fmt(parentPay)}点`;
+    $('tsumoTotal').classList.toggle('yakuman', yakuman);
+    $('tsumoInfo').textContent = state.dealer ? `各子 ${fmt(childPay)}点` : `子 ${fmt(childPay)}点 ／ 親 ${fmt(parentPay)}点`;
+    $('tsumoDetail').textContent = `${tsumoFu}符 ${han}翻${yakuman ? ' · 数え役満' : ''}${state.honba ? ` · 各家に本場加算 ${fmt(100*state.honba)}点` : ''}`;
+    $('undo').disabled = history.length === 0;
+    $('honbaDown').disabled = state.honba === 0;
+    $('hint').textContent = state.pinfu ? '平和はロン30符・ツモ20符で別々に計算します。七対子とは同時選択できません。' : '平和・七対子はボタンで切り替え。翻数は成立役を含めた合計を入力してください。';
+  }
+  $('dealer').addEventListener('click', () => change(() => state.dealer = !state.dealer, '親番を切り替えました'));
+  $('pinfu').addEventListener('click', () => change(() => { state.pinfu = !state.pinfu; if(state.pinfu) state.chiitoi=false; }, '平和を切り替えました'));
+  $('chiitoi').addEventListener('click', () => change(() => { state.chiitoi = !state.chiitoi; if(state.chiitoi){state.pinfu=false;state.fu=25;} else state.fu=30; }, '七対子を切り替えました'));
+  $('fuDown').addEventListener('click', () => change(() => setFu(state.fu-10)));
+  $('fuUp').addEventListener('click', () => change(() => setFu(state.fu+10)));
+  $('fu').addEventListener('change', e => change(() => setFu(e.target.value), '符を更新しました'));
+  $('hanDown').addEventListener('click', () => change(() => state.han=Math.max(1,state.han-1)));
+  $('hanUp').addEventListener('click', () => change(() => state.han=Math.min(13,state.han+1)));
+  $('han').addEventListener('change', e => change(() => state.han=Math.min(13,Math.max(1,Math.round(Number(e.target.value)||1))), '翻を更新しました'));
+  $('honbaDown').addEventListener('click', () => change(() => state.honba=Math.max(0,state.honba-1)));
+  $('honbaUp').addEventListener('click', () => change(() => state.honba=Math.min(99,state.honba+1)));
+  $('undo').addEventListener('click', () => { if(history.length){ state=history.pop(); render(); $('announcement').textContent='直前の操作を戻しました'; } });
+  $('clear').addEventListener('click', () => change(() => state={...initial}, 'すべてクリアしました'));
+  render();
+})();
+</script>
+</body>
+</html>
+
